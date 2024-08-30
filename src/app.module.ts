@@ -13,7 +13,7 @@ import { UserModule } from './modules/user/user.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { RoleModule } from './modules/role/role.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { ChatGateway } from './modules/websocket/data.gateway';
+import { WsModule } from './modules/websocket/ws.module';
 
 @Module({
   imports: [
@@ -27,8 +27,7 @@ import { ChatGateway } from './modules/websocket/data.gateway';
     RoleModule,
     AuthModule,
     SharedModule,
-    // DataGateway
+    WsModule,
   ],
-  providers: [ChatGateway],
 })
 export class AppModule {}
