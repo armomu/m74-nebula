@@ -10,18 +10,29 @@ export class WsService {
         console.log(`Received message from ${client.id}: ${payload}`);
         // 广播消息给所有其他连接
         this.broadcastMessage(client, payload);
-        return payload;
+        // return payload;
     }
 
     private broadcastMessage(sender: Socket, message: any): void {
         this.connections.forEach((connection) => {
             if (connection !== sender) {
-                connection.emit('message', {
-                    sender: sender.id,
-                    message: message,
-                });
+                // connection.emit('message', {
+                //     sender: sender.id,
+                //     message: message,
+                // });
+                connection.send(`{"event": "keydown", "data": "${message}" }`)
             }
         });
+    }
+
+    keydown(client: Socket, payload: string) {
+        this.broadcastMessage(client, payload);
+        return `{"event": "keydown", "data": "${payload}" }`;
+    }
+
+    keyup(client: Socket, payload: string) {
+        this.broadcastMessage(client, payload);
+        return `{"event": "keyup", "data": "${payload}" }`;
     }
 
     connection(client: Socket) {
