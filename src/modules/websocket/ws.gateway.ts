@@ -1,32 +1,32 @@
 import {
-  WebSocketGateway,
-  WebSocketServer,
-  SubscribeMessage,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
+    WebSocketGateway,
+    WebSocketServer,
+    SubscribeMessage,
+    OnGatewayConnection,
+    OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { WsService } from './ws.service';
 
 @WebSocketGateway()
 export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer()
-  server: Server;
+    @WebSocketServer()
+    server: Server;
 
-  constructor(private readonly wsService: WsService) {}
+    constructor(private readonly wsService: WsService) {}
 
-  handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
-    this.wsService.connection(client);
-  }
+    handleConnection(client: Socket) {
+        console.log(`Client connected: ${client.id}`);
+        this.wsService.connection(client);
+    }
 
-  @SubscribeMessage('message')
-  handleMessage(client: Socket, payload: any): void {
-    return this.wsService.message(client, payload);
-  }
+    @SubscribeMessage('message')
+    handleMessage(client: Socket, payload: any): void {
+        return this.wsService.message(client, payload);
+    }
 
-  handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
-    this.wsService.disconnect(client);
-  }
+    handleDisconnect(client: Socket) {
+        console.log(`Client disconnected: ${client.id}`);
+        this.wsService.disconnect(client);
+    }
 }

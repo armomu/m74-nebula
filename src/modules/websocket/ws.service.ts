@@ -9,7 +9,7 @@ export class WsService {
     message(client: Socket, payload: any): void {
         console.log(`Received message from ${client.id}: ${payload}`);
         // 广播消息给所有其他连接
-    this.broadcastMessage(client, payload);
+        this.broadcastMessage(client, payload);
         return payload;
     }
 

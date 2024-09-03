@@ -17,76 +17,79 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
-    private redisService: RedisService,
-    private configService: ConfigService,
-  ) {}
+    constructor(
+        private userService: UserService,
+        private jwtService: JwtService,
+        private redisService: RedisService,
+        private configService: ConfigService
+    ) {}
 
-  async validateUser(username: string, password: string) {
-    const user = await this.userService.findByUsername(username);
-    if (user && compareSync(password, user.password)) {
-      const { password, ...result } = user;
-      return result;
+    async validateUser(username: string, password: string) {
+        const user = await this.userService.findByUsername(username);
+        if (user && compareSync(password, user.password)) {
+            const { password, ...result } = user;
+            return result;
+        }
+        return null;
     }
-    return null;
-  }
 
-  async login(user: any, captcha?: string) {
-    // 判断用户是否有enable属性为true的角色
-    if (!user.roles?.some((item) => item.enable)) {
-      throw new CustomException(ErrorCode.ERR_11003);
+    async login(user: any, captcha?: string) {
+        // 判断用户是否有enable属性为true的角色
+        if (!user.roles?.some((item) => item.enable)) {
+            throw new CustomException(ErrorCode.ERR_11003);
+        }
+        const roleCodes = user.roles?.map((item) => item.code);
+        const currentRole = user.roles[0];
+        const payload = {
+            userId: user.id,
+            username: user.username,
+            roleCodes,
+            currentRoleCode: currentRole.code,
+        };
+        if (this.configService.get('IS_PREVIEW') === 'true') payload['captcha'] = captcha;
+        return this.generateToken(payload);
     }
-    const roleCodes = user.roles?.map((item) => item.code);
-    const currentRole = user.roles[0];
-    const payload = {
-      userId: user.id,
-      username: user.username,
-      roleCodes,
-      currentRoleCode: currentRole.code,
-    };
-    if (this.configService.get('IS_PREVIEW') === 'true') payload['captcha'] = captcha;
-    return this.generateToken(payload);
-  }
 
-  generateToken(payload: any) {
-    const accessToken = this.jwtService.sign(payload);
-    this.redisService.set(
-      this.getAccessTokenKey(payload),
-      accessToken,
-      ACCESS_TOKEN_EXPIRATION_TIME,
-    );
-    return {
-      accessToken,
-    };
-  }
-
-  async switchCurrentRole(payload: any, roleCode: string) {
-    const user = await this.userService.findByUsername(payload.username);
-    if (!user.roles?.some((item) => item.enable)) {
-      throw new CustomException(ErrorCode.ERR_11003);
+    generateToken(payload: any) {
+        const accessToken = this.jwtService.sign(payload);
+        this.redisService.set(
+            this.getAccessTokenKey(payload),
+            accessToken,
+            ACCESS_TOKEN_EXPIRATION_TIME
+        );
+        return {
+            accessToken,
+        };
     }
-    const roleCodes = user.roles.map((item) => item.code);
-    const currentRole = user.roles.find((item) => item.code === roleCode);
-    if (!currentRole) {
-      throw new CustomException(ErrorCode.ERR_11005, '您目前暂无此角色，请联系管理员申请权限');
-    }
-    payload = { ...payload, roleCodes, currentRoleCode: currentRole.code };
-    return this.generateToken(payload);
-  }
 
-  async logout(user: any) {
-    if (user.userId) {
-      await Promise.all([this.redisService.del(this.getAccessTokenKey(user))]);
-      return true;
+    async switchCurrentRole(payload: any, roleCode: string) {
+        const user = await this.userService.findByUsername(payload.username);
+        if (!user.roles?.some((item) => item.enable)) {
+            throw new CustomException(ErrorCode.ERR_11003);
+        }
+        const roleCodes = user.roles.map((item) => item.code);
+        const currentRole = user.roles.find((item) => item.code === roleCode);
+        if (!currentRole) {
+            throw new CustomException(
+                ErrorCode.ERR_11005,
+                '您目前暂无此角色，请联系管理员申请权限'
+            );
+        }
+        payload = { ...payload, roleCodes, currentRoleCode: currentRole.code };
+        return this.generateToken(payload);
     }
-    return false;
-  }
 
-  getAccessTokenKey(payload: any) {
-    return `${USER_ACCESS_TOKEN_KEY}:${payload.userId}${
-      payload.captcha ? ':' + payload.captcha : ''
-    }`;
-  }
+    async logout(user: any) {
+        if (user.userId) {
+            await Promise.all([this.redisService.del(this.getAccessTokenKey(user))]);
+            return true;
+        }
+        return false;
+    }
+
+    getAccessTokenKey(payload: any) {
+        return `${USER_ACCESS_TOKEN_KEY}:${payload.userId}${
+            payload.captcha ? ':' + payload.captcha : ''
+        }`;
+    }
 }
