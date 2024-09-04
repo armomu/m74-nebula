@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
+import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class WsService {
+
     private connections: Set<Socket> = new Set();
+
+    private socketClients: any = {};
+
     constructor() {}
 
     message(client: Socket, payload: any): void {
@@ -16,32 +21,47 @@ export class WsService {
     private broadcastMessage(sender: Socket, message: any): void {
         this.connections.forEach((connection) => {
             if (connection !== sender) {
-                // connection.emit('message', {
-                //     sender: sender.id,
-                //     message: message,
-                // });
                 connection.send(`{"event": "keydown", "data": "${message}" }`)
             }
         });
     }
 
+    // private broadcastMessage(sender: Socket, message: any): void {
+    //     this.connections.forEach((connection) => {
+    //         if (connection !== sender) {
+    //             connection.send(`{"event": "keydown", "data": "${message}" }`)
+    //         }
+    //     });
+    // }
+
     keydown(client: Socket, payload: string) {
         this.broadcastMessage(client, payload);
-        return `{"event": "keydown", "data": "${payload}" }`;
+        client.send(JSON.stringify({event: 'keydown', data: payload}));
     }
 
     keyup(client: Socket, payload: string) {
         this.broadcastMessage(client, payload);
-        return `{"event": "keyup", "data": "${payload}" }`;
+        client.send(JSON.stringify({event: 'keyup', data: payload }));
     }
 
     connection(client: Socket) {
-        console.log(`Client connected: ${client.id}`);
-        this.connections.add(client);
+        const uuid  = uuidv4();
+        Object.keys(this.socketClients).forEach((id) => {
+            this.socketClients[id].send( JSON.stringify({event: "new", data: id }))
+        })
+        this.socketClients[uuid] = client
+        // this.connections.add(client);
+        console.log(this.socketClients)
     }
 
     disconnect(client: Socket) {
-        console.log(`Client disconnected: ${client.id}`);
-        this.connections.delete(client);
+        // this.connections.delete(client);
+        Object.keys(this.socketClients).forEach((id) => {
+            if(this.socketClients[id] === client) {
+                delete this.socketClients[id]
+            }
+            // this.socketClients[id].send(`{"event": "new", "data": "${id}" }`)
+        })
+        console.log(this.socketClients)
     }
 }

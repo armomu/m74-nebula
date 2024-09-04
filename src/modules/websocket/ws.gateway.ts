@@ -15,10 +15,7 @@ export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     constructor(private readonly wsService: WsService) {}
 
-    handleConnection(client: Socket) {
-        console.log(`Client connected: ${client.id}`);
-        this.wsService.connection(client);
-    }
+
 
     @SubscribeMessage('message')
     handleMessage(client: Socket, payload: any): void {
@@ -38,5 +35,10 @@ export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     handleDisconnect(client: Socket) {
         console.log(`Client disconnected: ${client.id}`);
         this.wsService.disconnect(client);
+    }
+
+    handleConnection(client: Socket) {
+        console.log(`Client connected: ${client.id}`);
+        this.wsService.connection(client);
     }
 }

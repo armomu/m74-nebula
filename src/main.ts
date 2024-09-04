@@ -23,7 +23,7 @@ async function bootstrap() {
         })
     );
     app.useWebSocketAdapter(new WsAdapter(app));
-    await app.listen(process.env.APP_PORT || 8085);
+    await app.listen(process.env.APP_PORT || 8085, '0.0.0.0');
 
     console.log(`🚀 启动成功: http://localhost:${process.env.APP_PORT}`);
 }
