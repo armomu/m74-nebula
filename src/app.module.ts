@@ -32,7 +32,7 @@ import { CorsMiddleware } from './common/middleware/cors.middleware';
     ],
 })
 export class AppModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(CorsMiddleware).forRoutes('*');
-    }
+    // configure(consumer: MiddlewareConsumer) {
+    //     consumer.apply(CorsMiddleware).forRoutes('*');
+    // }
 }

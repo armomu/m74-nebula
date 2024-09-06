@@ -11,7 +11,7 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import { WsAdapter } from '@nestjs/platform-ws';
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, { cors: true });
     app.use(
         session({
             secret: 'isme',
@@ -24,7 +24,7 @@ async function bootstrap() {
     );
     app.useWebSocketAdapter(new WsAdapter(app));
     await app.listen(process.env.APP_PORT || 8085, '0.0.0.0');
-
+    app.enableCors();
     console.log(`🚀 启动成功: http://localhost:${process.env.APP_PORT}`);
 }
 bootstrap();
