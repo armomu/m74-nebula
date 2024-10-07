@@ -5,7 +5,7 @@
  * @Email: zclzone@outlook.com
  * Copyright © 2023 Ronnie Zhang(大脸怪) | https://isme.top
  **********************************/
- 
+
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -53,6 +53,28 @@ INSERT INTO `permission` VALUES (12, 'KeepAlive', 'KeepAlive', 'MENU', 9, '/base
 INSERT INTO `permission` VALUES (13, '创建新用户', 'AddUser', 'BUTTON', 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 1);
 INSERT INTO `permission` VALUES (14, '图标 Icon', 'Icon', 'MENU', 9, '/base/icon', NULL, 'i-fe:feather', '/src/views/base/unocss-icon.vue', '', NULL, NULL, NULL, 1, 1, 0);
 INSERT INTO `permission` VALUES (15, 'MeModal', 'TestModal', 'MENU', 9, '/testModal', NULL, 'i-me:dialog', '/src/views/base/test-modal.vue', NULL, NULL, NULL, NULL, 1, 1, 5);
+
+-- ----------------------------
+-- 替换菜单数据
+-- ----------------------------
+
+INSERT INTO `permission`  VALUES (21, 'Dashboard', 'Dashboard', '', NULL , '/', '/dashboard/smart-house', 'mdi-gauge', '/src/layout/index.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (24, 'Tesla Model S', 'teslaModelS', '', '21' , '/dashboard/tesla-model-s', '', 'mdi-alpha-t', '/src/views/dashboard/teslaModelS.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (25, 'Smart House', 'smartHouse', '', '21' , '/dashboard/smart-house', '', 'mdi-alpha-s', '/src/views/dashboard/smartHouse.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (26, 'Access Control', 'AccessControl', '', NULL , '/access-control', '/access-control/menus', 'mdi-account-supervisor-circle', '/src/layout/index.vue', NULL , NULL, NULL, NULL, '1', '1' , '999');
+INSERT INTO `permission`  VALUES (27, 'Menus', 'Menus', '', '26' , '/access-control/menus', '', 'mdi-alpha-m', '/src/views/authority/index.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (28, 'Componets', 'componets', '', NULL , '/componets', '/componets/table', 'mdi-cube-scan', '/src/layout/index.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (29, 'Samples', 'samples', '', '28' , '/componets/samples', '', 'mdi-alpha-s', '/src/views/componets/sample.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (30, 'table', 'Table', '', '28' , '/componets/table', '', 'mdi-alpha-t', '/src/views/componets/table.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (31, 'calendar', 'Calendar', '', '28' , '/componets/calendar', '', 'mdi-alphac', '/src/views/componets/calendar.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (32, 'Graphics', 'graphics', '', NULL , '/graphics', '/graphics/babylonjs', 'mdi-image', '/src/layout/index.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (33, 'Three.js', 'three-js', '', '32' , '/graphics/three.js', '', 'mdi-alpha-t', '/src/views/graphics/threeJs.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (34, 'Pixi.js', 'Pixi-js', '', '32' , '/graphics/pixi-js', '', 'mdi-alpha-p', '/src/views/graphics/pixiJs.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (35, 'Babylon.js', 'babylon-js', '', '32' , '/graphics/babylon.js', '', 'mdi-alpha-b', '/src/views/graphics/babylonjs.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (36, 'Editor', 'editor', '', NULL , '/editor', '/editor/oreo-editor', 'mdi-view-module', '/src/layout/index.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+INSERT INTO `permission`  VALUES (37, 'Oreo Editor', 'oreo-editor', '', '36' , '/editor/oreo-editor', '', 'mdi-alpha-o', '/src/views/oreo-editor/index.vue', NULL , NULL, NULL, NULL, '1', '1' , NULL);
+
+
 
 -- ----------------------------
 -- Table structure for profile
